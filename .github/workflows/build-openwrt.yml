@@ -1,4 +1,4 @@
-name: Build ImmortalWrt 25.12 (Ultimate x86)。
+name: Build ImmortalWrt 25.12 (Ultimate x86)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:     # 支持手动点击编译
 
 env:
-  UPLOAD_FIRMWARE: true       # 是否上传固件到 Actions 产物..
+  UPLOAD_FIRMWARE: true       # 是否上传固件到 Actions 产物
   UPLOAD_RELEASE: true        # 是否自动发布到 GitHub Releases 页面
   TAG_NAME: "v25.12-Ultimate" # Release 版本标签名称
   TZ: "Asia/Shanghai"         # 强制设定时区为北京时间
