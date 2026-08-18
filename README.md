@@ -1,1 +1,50 @@
-# Build_ImmortalWrt
+# 🚀 ImmortalWrt 25.12 稳定版全能云编译项目
+
+[![Build OpenWrt](https://github.com/${{ github.repository }}/actions/workflows/build-openwrt.yml/badge.svg)](https://github.com/${{ github.repository }}/actions/workflows/build-openwrt.yml)
+[![GitHub release](https://img.shields.io/github/v/release/${{ github.repository }}?include_prereleases&style=flat-square)](https://github.com/${{ github.repository }}/releases)
+
+基于 **GitHub Actions** 的云端自动化编译系统，采用现代化工程解耦架构，致力于打造高扩展、开箱即用的全能型软路由固件。
+
+---
+
+## ✨ 核心特性
+
+- **最新稳定内核**：基于官方 **ImmortalWrt 25.12** 稳定版分支，自带 APK 软件包管理器与现代化特性。
+- **专业架构设计**：采用标准的 `1个工作流 + 2个脚本 + 1个配置文件` 模块化解耦，逻辑清晰，易于维护。
+- **全平台完美兼容**：
+  - **物理机**：完美支持常见软路由、工控机、台式机物理网卡。
+  - **主流虚拟机**：原生内置 **VMware**（`open-vm-tools` + `vmxnet3`）、**PVE / KVM**（`VirtIO` 半虚拟化网卡/磁盘）及 **Hyper-V** 全套驱动。
+- **极速国内加速**：底层自动对接**北京大学开源镜像站**，彻底告别海外服务器下载慢、编译超时的问题。
+- **智能时间戳命名**：每次编译出的固件自动附加北京时间戳（如 `20260606-1430`），清晰可辨，永不覆盖。
+- **双重产物分发**：支持同时上传至 **GitHub Actions Artifacts** 产物库以及自动发布到 **GitHub Releases** 页面。
+
+---
+
+## 📦 内置精选插件与工具
+
+本项目默认集成了丰富的实用网络、组网与系统工具：
+
+| 分类 | 插件 / 工具名称 | 中文说明 |
+| :--- | :--- | :--- |
+| **网络代理** | `luci-app-passwall` | 经典科学网络代理客户端 |
+| **组网互联** | `Netbird` / `WireGuard` | 现代高安全性组网与异地组网工具 |
+| **实用面板** | `luci-app-lucky` | 聚合反向代理、内网穿透与 DDNS 工具 |
+| **存储与分享** | `luci-app-openlist2` | 高性能多网盘挂载与文件列表服务 |
+| **系统运维** | `luci-app-ttyd` | 网页端安全命令行终端（Web Shell） |
+| **计划管理** | `luci-app-taskplan` | 路由后台定时任务面板 |
+| **音视频转码** | `luci-app-rtp2httpd` | IPTV 组播转单播工具 |
+| **诊断与加速** | `htop`, `iperf3`, `ethtool-full`, `Turbo ACC` | 进程管理、网络测速、网卡调优及网络加速 |
+
+---
+
+## 📂 项目目录结构说明
+
+```text
+├── .github/
+│   └── workflows/
+│       └── build-openwrt.yml      # 🤖 核心编译流水线 (支持定时、手动、多机型矩阵与时区校准)
+├── configs/
+│   └── x86_64.config              # ⚙️ x86_64 架构的基础配置与插件/驱动勾选清单
+└── scripts/
+    ├── diy-part1.sh               # 🔌 第三方软件源（Feeds）集中注入脚本
+    └── diy-part2.sh               # 🛠️ 系统底层修改脚本（国内镜像源加速、默认 IP 与时区调整）
