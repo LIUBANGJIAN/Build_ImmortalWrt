@@ -25,7 +25,7 @@ jobs:
         target: [x86_64]
 
     steps:
-    - name: 检出仓库代码
+    - name: 检出仓库代码。
       uses: actions/checkout@v4
 
     - name: 设置北京时间时区
