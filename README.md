@@ -1,8 +1,5 @@
 # 🚀 ImmortalWrt 25.12 稳定版全能云编译项目
 
-[![Build OpenWrt](https://github.com/${{ github.repository }}/actions/workflows/build-openwrt.yml/badge.svg)](https://github.com/${{ github.repository }}/actions/workflows/build-openwrt.yml)
-[![GitHub release](https://img.shields.io/github/v/release/${{ github.repository }}?include_prereleases&style=flat-square)](https://github.com/${{ github.repository }}/releases)
-
 基于 **GitHub Actions** 的云端自动化编译系统，采用现代化工程解耦架构，致力于打造高扩展、开箱即用的全能型软路由固件。
 
 ---
