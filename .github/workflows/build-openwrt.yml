@@ -37,14 +37,12 @@ jobs:
       run: |
         sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/powershell /usr/share/swift /usr/local/.ghcup /usr/lib/jvm /etc/mysql /etc/php || true
         sudo -E apt-get -qq update
-        # 💡 明确清理干净，绝不包含 build-setup
         sudo -E apt-get -qq install -y libfuse-dev libncurses5-dev libncursesw5-dev ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache clang cmake cpio curl device-tree-compiler flex gawk gcc-multilib g++-multilib gettext genisoimage git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libpython3-dev libreadline-dev libssl-dev libtool llvm lrzsz ninja-build p7zip p7zip-full patch pkgconf python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip wget xmlto xxd zlib1g-dev scdoc
         sudo -E apt-get -qq clean
 
     - name: 克隆 ImmortalWrt 25.12 稳定版源码
       run: |
         git clone -b openwrt-25.12 https://github.com/immortalwrt/immortalwrt.git openwrt
-        ln -s openwrt /wrt
 
     - name: 运行 diy-part1.sh 注入第三方软件源 (Feeds)
       working-directory: ./openwrt
@@ -61,12 +59,12 @@ jobs:
       run: |
         CONFIG_FILE="configs/${{ matrix.target }}.config"
         if [ -f "$CONFIG_FILE" ]; then
-          cp "$CONFIG_FILE" /wrt/.config
+          cp "$CONFIG_FILE" openwrt/.config
         else
           echo "错误: 找不到对应的配置文件 $CONFIG_FILE"
           exit 1
         fi
-        cd /wrt && make defconfig
+        cd openwrt && make defconfig
 
     - name: 预下载编译依赖包
       working-directory: ./openwrt
@@ -82,7 +80,7 @@ jobs:
       id: organize
       if: success()
       run: |
-        cd /wrt/bin/targets/*/*
+        cd openwrt/bin/targets/*/*
         mkdir -p packaging_files
         for file in *combined*efi*; do
           if [ -f "$file" ]; then
@@ -90,7 +88,6 @@ jobs:
             cp "$file" "packaging_files/immortalwrt-25.12-${{ matrix.target }}-${{ env.BUILD_TIME }}.$ext"
           fi
         done
-        echo "FIRMWARE_DIR=/wrt/bin/targets/*/*/*packaging_files*/*" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_ENV
 
     - name: 1. 上传固件到 GitHub Actions Artifacts 产物
@@ -98,7 +95,7 @@ jobs:
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
         name: ImmortalWrt-${{ matrix.target }}-${{ env.BUILD_TIME }}
-        path: /wrt/bin/targets/*/*/*packaging_files*/*
+        path: openwrt/bin/targets/*/*/*packaging_files*/*
 
     - name: 2. 自动发布固件到 GitHub Releases 页面
       uses: softprops/action-gh-release@v2
@@ -108,7 +105,7 @@ jobs:
       with:
         tag_name: ${{ env.TAG_NAME }}
         name: "ImmortalWrt 25.12 稳定版 [${{ env.BUILD_TIME }}]"
-        files: /wrt/bin/targets/*/*/*packaging_files*/*
+        files: openwrt/bin/targets/*/*/*packaging_files*/*
         body: |
           ## 🚀 固件更新说明
           - **编译时间（北京时间）**: ${{ env.BUILD_TIME }}
